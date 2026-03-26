@@ -20,6 +20,9 @@ public class TarefaModel {
     @Column(name = "concluida")
     private Boolean concluida;
 
+    public TarefaModel() {
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

@@ -3,34 +3,46 @@ package com.johan.tarefas.controllers;
 import com.johan.tarefas.models.TarefaModel;
 import com.johan.tarefas.services.TarefaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tarefas")
+@RequestMapping(path = "/tarefas")
 public class TarefaController {
 
     @Autowired
     private TarefaService tarefaService;
 
     @PostMapping
-    public TarefaModel criarTarefa(@RequestBody TarefaModel tarefa) {
-        return tarefaService.criarTarefa(tarefa);
+    public ResponseEntity<TarefaModel> criarTarefa(@RequestBody TarefaModel tarefaModel){
+
+        TarefaModel request = tarefaService.criarTarefa(tarefaModel);
+
+        URI uri = URI.create("/tarefas/" + request.getId());
+        return ResponseEntity.created(uri).body(request);
     }
+
 
     @GetMapping
-    public List<TarefaModel> listarTarefas() {
-        return tarefaService.findAll();
-    }
-
-    @GetMapping("/{id}")
-    public Optional<TarefaModel> buscarTarefaPorId(@PathVariable Long id) {
-        return tarefaService.buscarTarefaPorId(id);
+    public ResponseEntity<List<TarefaModel>> findAll(){
+        List<TarefaModel> request = tarefaService.findAll();
+        return ResponseEntity.ok().body(request);
     }
 
     @DeleteMapping("/{id}")
-    public void deletarTarefa(@PathVariable Long id) {
+    public ResponseEntity<Void> deletarTarefa(@PathVariable Long id){
         tarefaService.deletarTarefa(id);
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public void buscarTarefaPorId(@PathVariable Long id){
+        tarefaService.buscarTarefaPorId(id);
+
+    }
+
 }
